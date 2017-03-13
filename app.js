@@ -4,9 +4,15 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const nunjucks = require('nunjucks');
 const models = require('./models');
+const wikiRouter = require('./routes/wiki.js')
 
 
 app.use(morgan('dev')); 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use('/wiki', wikiRouter); 
 
 var env = nunjucks.configure('views', {noCache: true});
 // have res.render work with html files
@@ -17,10 +23,10 @@ app.engine('html', nunjucks.render);
 
 app.use(express.static('public'));
 
-// app.get('/', function(req, res){
-// 	console.log("Got the Get");
-// 	res.send("Wht's good");
-// }) 
+app.get('/', function(req, res){
+	console.log("Got the Get");
+	res.send("Wht's good");
+}) 
 
 models.User.sync({})
 .then(function () {
@@ -28,7 +34,7 @@ models.User.sync({})
 })
 .then(function () {
     app.listen(3000, function () {
-        console.log('Server is listening on port 3001!');
+        console.log('Server is listening on port 3000!');
     });
 })
 .catch(console.error);
