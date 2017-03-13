@@ -29,26 +29,18 @@ let Page = db.define('page', {
 			route: function(){
 				return "/wiki/"+ this.urlTitle
 			}
-		}
-	},
-	{
+		},
+
 		hooks: {
-			beforeValidate: function (title) {
-				 	console.log(title); 
-				  if (title) {
+			beforeValidate: function (page, options) {
+				 	//console.log(page.title); 
 				    // Removes all non-alphanumeric characters from title
 				    // And make whitespace underscore
 
-				    this.urlTitle = title.replace(/\s+/g, '_').replace(/\W/g, '');
-				    return this.urlTitle;
-				  } else {
-				    // Generates random 5 letter string
-				    return Math.random().toString(36).substring(2, 7);
-				  }
+				    page.urlTitle = page.title.replace(/\s+/g, '_').replace(/\W/g, '');
 				}
 		}
 	}
-
 );
 
 let User = db.define('user', {
@@ -58,12 +50,14 @@ let User = db.define('user', {
 	},
 	email: {
 		type: Sequelize.STRING,
-		allowNull: false, 
-		validate: {
-            isEmail: true
-        }
+		allowNull: false
+		// validate: {
+  //           isEmail: true
+  //       }
 	}
 });
+
+Page.belongsTo(User, { as: 'author' });
 
 module.exports = {
 	Page: Page,
